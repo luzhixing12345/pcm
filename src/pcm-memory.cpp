@@ -25,6 +25,7 @@
 #include <assert.h>
 #include "cpucounters.h"
 #include "utils.h"
+#include "vtism.h"
 
 #define PCM_DELAY_DEFAULT 1.0 // in seconds
 #define PCM_DELAY_MIN 0.015 // 15 milliseconds is practical on most modern CPUs
@@ -307,6 +308,7 @@ void printSocketCXLBW(PCM* m, memdata_t* md, uint32 no_columns, uint32 skt)
         {
             for (uint32 i = skt; i < (skt + no_columns); ++i) {
                 cout << "|-- .mem   " << setw(2) << port << "  Reads (MB/s): " << setw(8) << md->CXLMEM_Rd_socket_port[i][port] << " --|";
+                write_bandwidth(m->get_cxl_nid(i, port), md->CXLMEM_Rd_socket_port[i][port], READ);
             }
         }
         else
@@ -318,6 +320,7 @@ void printSocketCXLBW(PCM* m, memdata_t* md, uint32 no_columns, uint32 skt)
         cout << "\n";
         for (uint32 i = skt; i < (skt + no_columns); ++i) {
             cout << "|--            Writes(MB/s): " << setw(8) << md->CXLMEM_Wr_socket_port[i][port] << " --|";
+            write_bandwidth(m->get_cxl_nid(i, port), md->CXLMEM_Wr_socket_port[i][port], WRITE);
         }
         cout << "\n";
         if (md->BHS)
@@ -356,10 +359,12 @@ void printSocketBWFooter(PCM *m, uint32 no_columns, uint32 skt, const memdata_t 
 {
     for (uint32 i=skt; i<(skt+no_columns); ++i) {
         cout << "|-- SKT " << setw(2) << i << " Mem Read (MB/s) :" << setw(9) << md->iMC_Rd_socket[i] << " --|";
+        write_bandwidth(i, (int)md->iMC_Rd_socket[i], READ);
     }
     cout << "\n";
     for (uint32 i=skt; i<(skt+no_columns); ++i) {
         cout << "|-- SKT " << setw(2) << i << " Mem Write(MB/s) :" << setw(9) << md->iMC_Wr_socket[i] << " --|";
+        write_bandwidth(i, (int)md->iMC_Wr_socket[i], WRITE);
     }
     cout << "\n";
     if (anyPmem(md->metrics))
@@ -1353,6 +1358,7 @@ int mainThrows(int argc, char * argv[])
 #endif
 
     set_signal_handlers();
+    init_vtism();
 
     cerr << "\n";
     cerr << " Intel(r) Performance Counter Monitor: Memory Bandwidth Monitoring Utility " << PCM_VERSION << "\n";

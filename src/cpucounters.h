@@ -686,6 +686,18 @@ public:
 
         return UFSStatus[0].size();
     }
+
+    int get_cxl_nid(int socket, int port) {
+        if (cxlPMUs[socket].size() == 0) {
+            return -1;
+        }
+        int nid = num_sockets; // cpu num
+        for (int i = 0; i < socket; ++i) {
+            nid += cxlPMUs[i].size();
+        }
+        nid += port;
+        return nid;
+    }
 private:
     typedef std::unordered_map<int, UncorePMUArrayType> UncorePMUMapType;
     // socket -> die -> pmu map -> pmu ref array
@@ -2593,7 +2605,7 @@ public:
     {
         return (
                cpu_family_model == PCM::SRF
-            || cpu_family_model == PCM::GNR
+            || cpu_family_model == PCM::GNR || cpu_family_model == PCM::SPR
             );
     }
     
