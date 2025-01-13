@@ -2328,6 +2328,9 @@ int mainThrows(int argc, char * argv[])
     set_signal_handlers();
     set_real_time_priority(true);
 
+    // redirect cerr to /dev/null
+    // cerr.rdbuf(&nullStream2);
+
     cerr << "\n";
     cerr << " Intel(r) Performance Counter Monitor: Raw Event Monitoring Utility \n";
     cerr << "\n";

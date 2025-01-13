@@ -1,7 +1,7 @@
 
 #pragma once
 
-int init_vtism(void);
+void init_vtism(void);
 
 enum bw_type {
     READ,

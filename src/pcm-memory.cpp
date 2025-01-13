@@ -40,6 +40,7 @@ uint32 max_imc_channels = ServerUncoreCounterState::maxChannels;
 const uint32 max_edc_channels = ServerUncoreCounterState::maxChannels;
 const uint32 max_imc_controllers = ServerUncoreCounterState::maxControllers;
 bool SPR_CXL = false; // use SPR CXL monitoring implementation
+extern int pcm_delay;
 
 typedef struct memdata {
     float iMC_Rd_socket_chan[max_sockets][ServerUncoreCounterState::maxChannels]{};
@@ -1582,7 +1583,7 @@ int mainThrows(int argc, char * argv[])
         // for non-CSV mode delay < 1.0 does not make a lot of practical sense:
         // hard to read from the screen, or
         // in case delay is not provided in command line => set default
-        if( ((delay<1.0) && (delay>0.0)) || (delay<=0.0) ) delay = PCM_DELAY_DEFAULT;
+        if( ((delay<1.0) && (delay>0.0)) || (delay<=0.0) ) delay = pcm_delay;
     }
 
     shared_ptr<CHAEventCollector> chaEventCollector;
