@@ -9,9 +9,7 @@
 
 #define VTISM_SYSFS_PATH         "/sys/kernel/mm/vtism/"
 #define VTISM_SYSFS_PCM_PATH     "/sys/kernel/mm/vtism/pcm/"
-#define VTISM_SYSFS_PCM_INTERVAL "/sys/kernel/mm/vtism/pcm/interval"
 
-int pcm_delay;
 int vtism_init_success = 0;
 
 void init_vtism() {
@@ -24,18 +22,7 @@ void init_vtism() {
         std::cerr << "VTISM pcm not supported\n";
         return;
     }
-    if (access(VTISM_SYSFS_PCM_INTERVAL, F_OK) != 0) {
-        std::cerr << "VTISM pcm interval not supported\n";
-        return;
-    }
 
-    FILE *f = fopen(VTISM_SYSFS_PCM_INTERVAL, "r");
-    if (!f) {
-        std::cerr << "Failed to open VTISM pcm interval\n";
-        return;
-    }
-    fscanf(f, "%d", &pcm_delay);
-    fclose(f);
     std::cerr << "VTISM init success\n";
     vtism_init_success = 1;
     return;
