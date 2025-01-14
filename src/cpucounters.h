@@ -688,15 +688,26 @@ public:
     }
 
     int get_cxl_nid(int socket, int port) {
-        if (cxlPMUs[socket].size() == 0) {
+        // if (cxlPMUs[socket].size() == 0) {
+        //     return -1;
+        // }
+        // int nid = num_sockets; // cpu num
+        // for (int i = 0; i < socket; ++i) {
+        //     nid += cxlPMUs[i].size();
+        // }
+        // nid += port;
+        // return nid;
+        if (socket == 0) {
+            return -1;
+        } else if (socket == 1) {
+            if (port == 0) {
+                return 3;
+            } else {
+                return 2;
+            }
+        } else {
             return -1;
         }
-        int nid = num_sockets; // cpu num
-        for (int i = 0; i < socket; ++i) {
-            nid += cxlPMUs[i].size();
-        }
-        nid += port;
-        return nid;
     }
 private:
     typedef std::unordered_map<int, UncorePMUArrayType> UncorePMUMapType;

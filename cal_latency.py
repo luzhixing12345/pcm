@@ -117,23 +117,18 @@ def check_node_resources():
             if has_cpu:
                 dram_nodes.append(int(node_dir[4:]))
                         
-    print(f"cpu_nodes: {dram_nodes}")
-    print(f"cxl_nodes: {cxl_nodes}")
+    # print(f"cpu_nodes: {dram_nodes}")
+    # print(f"cxl_nodes: {cxl_nodes}")
 
 def write_vtism_interface(node_type, latencys):
-    # with open(f'/sys/kernel/mm/vtism/pcm/node{node}/latency', 'w') as f:
-    #     f.write(str(latency))
-        
-    if node_type == 'dram':
-        for i, node in enumerate(dram_nodes):
-            with open(f'/sys/kernel/mm/vtism/pcm/node{node}/latency', 'w') as f:
-                f.write(str(latencys[node]))
-            # print(f"write vtism interface node{node} latency: {latencys[i]}")
-    elif node_type == 'cxl':
-        for i, node in enumerate(cxl_nodes):
-            with open(f'/sys/kernel/mm/vtism/pcm/node{node}/latency', 'w') as f:
-                f.write(str(latencys[node]))
-            # print(f"write vtism interface node{node} latency: {latencys[i]}")
+    
+    for i, node in enumerate(dram_nodes):
+        if node_type == "dram":
+            with open(f"/sys/kernel/mm/vtism/pcm/node{node}/latency", "w") as f:
+                f.write(str(latencys[i]))
+        elif node_type == "cxl":
+            with open(f"/sys/kernel/mm/vtism/pcm/node{node}/to_cxl_latency", "w") as f:
+                f.write(str(latencys[i]))
 
 def main():
     if not os.path.exists("/sys/kernel/mm/vtism/pcm"):
